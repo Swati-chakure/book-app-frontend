@@ -9,6 +9,7 @@ function App() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [description, setDescription] = useState('');
+  const[error,setError]=useState('')
   
   useEffect(() => {
     fetchBooks();
@@ -20,13 +21,26 @@ function App() {
   };
 
   const addBook = async () => {
+    if (!title.trim() || !author.trim() || !description.trim()) {
+      setError('fields is required!');
+      return;
+    }
+  
+    setError('');
     const newBook = { title, author, description };
-    await axios.post(API_URL, newBook);
-    fetchBooks();
-    setTitle('');
-    setAuthor('');
-    setDescription('');
+  
+    try {
+      await axios.post(API_URL, newBook);
+      fetchBooks();
+      setTitle('');
+      setAuthor('');
+      setDescription('');
+    } catch (error) {
+      console.error('Error adding book:', error);
+      setError('Failed to add the book. Please try again.');
+    }
   };
+  
 
   const deleteBook = async (id) => {
     await axios.delete(`${API_URL}/${id}`);
@@ -46,19 +60,25 @@ function App() {
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <input
             className="border p-3 w-full rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
             placeholder="Author"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
+            required
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <textarea
             className="border p-3 w-full rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
           />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             onClick={addBook}
             className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition duration-200 shadow-md"
