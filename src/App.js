@@ -69,6 +69,9 @@ function App() {
 
         {/* Book List Section */}
         <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">Book List</h2>
+      {books.length === 0 ? (
+        <p className="text-center text-gray-600">No books found. Add a new book to get started!</p>
+      ) : (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {books.map((book) => (
             <div key={book._id} className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition duration-200">
@@ -87,6 +90,7 @@ function App() {
             </div>
           ))}
         </div>
+      )}
       </div>
     </div>
   );
